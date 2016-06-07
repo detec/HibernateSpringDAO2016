@@ -1,0 +1,217 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
+
+	
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>sample</groupId>
+	<artifactId>sample-dao</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<hibernate.version>5.1.0.Final</hibernate.version>
+		<jackson.version>2.6.6</jackson.version>
+		<spring.version>4.2.6.RELEASE</spring.version>
+		<rp.build.warname>sample-dao</rp.build.warname>
+	</properties>
+	
+	
+	<packaging>war</packaging>
+
+<build>	
+	<testResources>
+		<testResource>
+    		<directory>${project.basedir}/src/test/java</directory>
+  		</testResource>
+  		<testResource>
+    		<directory>${project.basedir}/src/test/resources</directory>
+    		<filtering>true</filtering>
+   		</testResource>
+	</testResources> 
+	
+	<plugins>
+    	<plugin>
+        	<artifactId>maven-compiler-plugin</artifactId>
+        	<version>3.3</version>
+        	<configuration>
+          	<source>${maven.compiler.source}</source>
+          	<target>${maven.compiler.target}</target>
+<!--           <compilerArgs> -->
+<!--           <arg>-verbose</arg> -->
+<!--           <arg>-Xlint:all,-options,-path</arg> -->
+<!--           </compilerArgs> -->
+        	</configuration>
+    	</plugin>
+    	<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-surefire-plugin</artifactId>
+			<version>2.18.1</version>
+			<configuration>
+			<includes>
+				<include>**/*Tests.java</include>
+			</includes>
+			<excludes>
+            	<exclude>**/*IT.java</exclude>
+            </excludes>
+			</configuration>
+		</plugin>
+		
+		<plugin>
+        	<artifactId>maven-war-plugin</artifactId>
+        	<version>2.6</version>
+        	<configuration>
+        		<warSourceDirectory>src/main/webapp</warSourceDirectory>
+          		<failOnMissingWebXml>true</failOnMissingWebXml>
+				<warName>${rp.build.warname}</warName>
+        	</configuration>
+      	</plugin>
+		<plugin>
+    		<groupId>org.apache.tomcat.maven</groupId>
+        	<artifactId>tomcat7-maven-plugin</artifactId>
+        	<version>2.2</version>
+        	<configuration>
+        		<server>TomcatServer</server>
+        		<username>admin</username>
+        		<password>admin</password>
+        		<update>true</update>
+        		<path>/${rp.build.warname}</path>
+        	</configuration>
+		</plugin>		
+	</plugins>
+	
+</build>	
+	
+	<dependencies>
+	
+		<!-- Hibernate -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+   			<groupId>org.hibernate</groupId>
+   			<artifactId>hibernate-entitymanager</artifactId>
+   			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.1-api</artifactId>
+			<version>1.0.0.Final</version>
+		</dependency>
+		
+		<!--  APIs -->
+		<dependency>
+	    	<groupId>javax</groupId>
+	    	<artifactId>javaee-web-api</artifactId>
+	    	<version>7.0</version>
+	    	<scope>provided</scope>
+		</dependency>
+		<dependency>
+  			<groupId>javax.servlet</groupId>
+  			<artifactId>javax.servlet-api</artifactId>
+  			<version>3.1.0</version>
+  			<scope>test</scope>
+		</dependency>
+		<!-- Databases -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.38</version>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.191</version>
+			<scope>test</scope>
+		</dependency>
+	
+		
+		<!-- Jackson dependencies -->
+		<dependency>
+	    	<groupId>com.fasterxml.jackson.core</groupId>
+	    	<artifactId>jackson-databind</artifactId>
+	    	<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.jaxrs</groupId>
+			<artifactId>jackson-jaxrs-json-provider</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+		<!-- This is only needed for Spring -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		
+		<!-- Tests -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>3.4.1</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- Spring -->
+		<dependency>
+	  		<groupId>org.springframework</groupId>
+	  		<artifactId>spring-context</artifactId>
+	  		<version>${spring.version}</version>
+	  	</dependency>
+	  	<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+				<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+	 	<dependency>
+	    	<groupId>org.springframework</groupId>
+	    	<artifactId>spring-beans</artifactId>
+	    	<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+	    	<groupId>org.springframework</groupId>
+	    	<artifactId>spring-tx</artifactId>
+	    	<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+			
+			
+	</dependencies>
+</project>
