@@ -14,7 +14,7 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<hibernate.version>5.2.0.Final</hibernate.version>
+		<hibernate.version>5.1.0.Final</hibernate.version>
 		<jackson.version>2.6.6</jackson.version>
 		<spring.version>4.2.6.RELEASE</spring.version>
 		<rp.build.warname>sample-dao</rp.build.warname>
@@ -95,12 +95,18 @@
 			<version>${hibernate.version}</version>
 		</dependency>
 		
-	<!-- It is now included in hibernate-core -->	
-<!-- 		<dependency>
+	<!-- It will be included in hibernate-core since 5.2 -->	
+		<dependency>
    			<groupId>org.hibernate</groupId>
    			<artifactId>hibernate-entitymanager</artifactId>
    			<version>${hibernate.version}</version>
-		</dependency> -->
+		</dependency>
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-java8</artifactId>
+		    <version>${hibernate.version}</version>
+		</dependency>
+				
 		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
 			<artifactId>hibernate-jpa-2.1-api</artifactId>
@@ -146,12 +152,21 @@
 			<version>${jackson.version}</version>
 		</dependency>
 
+		<dependency>
+		    <groupId>com.fasterxml.jackson.datatype</groupId>
+		    <artifactId>jackson-datatype-jsr310</artifactId>
+		    <version>${jackson.version}</version>
+		</dependency>
+
+
 		<!-- This is only needed for Spring -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
 			<version>${jackson.version}</version>
 		</dependency>
+		
+		
 		
 		<!-- Tests -->
 		<dependency>
