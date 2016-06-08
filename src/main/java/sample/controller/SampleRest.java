@@ -15,10 +15,8 @@ import sample.domain.ExceptionJSONInfo;
 public class SampleRest {
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ExceptionJSONInfo>  handleException(HttpServletRequest request, Exception ex) {
-		ExceptionJSONInfo response = new ExceptionJSONInfo();
-		response.setUrl(request.getRequestURL().toString());
-		response.setMessage(ex.getMessage());
+	public ResponseEntity<ExceptionJSONInfo> handleException(HttpServletRequest request, Exception ex) {
+		ExceptionJSONInfo response = new ExceptionJSONInfo(request.getRequestURL().toString(), ex);
 
 		return new ResponseEntity<ExceptionJSONInfo>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 

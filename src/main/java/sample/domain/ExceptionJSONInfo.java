@@ -3,6 +3,32 @@ package sample.domain;
 public class ExceptionJSONInfo {
 	private String url;
 	private String message;
+	private String stackTrace;
+
+	public ExceptionJSONInfo(String url, Exception ex) {
+		this.url = url;
+		this.message = ex.getMessage();
+
+		StringBuilder sb = new StringBuilder();
+
+		StackTraceElement elements[] = ex.getStackTrace();
+		for (int i = 0, n = elements.length; i < n; i++) {
+
+			sb.append(elements[i].getFileName() + ":" + elements[i].getLineNumber() + ">> "
+					+ elements[i].getMethodName() + "()");
+		}
+
+		this.stackTrace = sb.toString();
+
+	}
+
+	public String getStackTrace() {
+		return stackTrace;
+	}
+
+	public void setStackTrace(String stackTrace) {
+		this.stackTrace = stackTrace;
+	}
 
 	public String getUrl() {
 		return url;
