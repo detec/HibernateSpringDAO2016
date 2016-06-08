@@ -14,7 +14,7 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<hibernate.version>5.1.0.Final</hibernate.version>
+		<hibernate.version>5.2.0.Final</hibernate.version>
 		<jackson.version>2.6.6</jackson.version>
 		<spring.version>4.2.6.RELEASE</spring.version>
 		<rp.build.warname>sample-dao</rp.build.warname>
@@ -94,11 +94,13 @@
 			<artifactId>hibernate-core</artifactId>
 			<version>${hibernate.version}</version>
 		</dependency>
-		<dependency>
+		
+	<!-- It is now included in hibernate-core -->	
+<!-- 		<dependency>
    			<groupId>org.hibernate</groupId>
    			<artifactId>hibernate-entitymanager</artifactId>
    			<version>${hibernate.version}</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
 			<artifactId>hibernate-jpa-2.1-api</artifactId>
@@ -122,12 +124,12 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.38</version>
+			<version>5.1.39</version>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.4.191</version>
+			<version>1.4.192</version>
 			<scope>test</scope>
 		</dependency>
 	
