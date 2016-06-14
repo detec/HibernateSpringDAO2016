@@ -15,8 +15,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<hibernate.version>5.1.0.Final</hibernate.version>
-		<jackson.version>2.6.6</jackson.version>
-		<spring.version>4.2.6.RELEASE</spring.version>
+		<jackson.version>2.7.4</jackson.version>
+		<spring.version>4.3.0.RELEASE</spring.version>
 		<rp.build.warname>sample-dao</rp.build.warname>
 	</properties>
 	
@@ -107,12 +107,6 @@
 		    <version>${hibernate.version}</version>
 		</dependency>
 				
-		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.1-api</artifactId>
-			<version>1.0.0.Final</version>
-		</dependency>
-		
 		<!--  APIs -->
 		<dependency>
 	    	<groupId>javax</groupId>
