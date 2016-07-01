@@ -10,12 +10,16 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Order;
 
 import sample.domain.BaseEntity;
+import sample.exceptions.BusinessLogicException;
 
 /**
  * Interface for injecting service layer common functionality implementation
  * class. Its methods replicate JPA DAO interface. Specific service class
  * implementations can override some default methods like save(), update(),
  * delete() etc.
+ *
+ * Methods that may perform checks of business logic before making changes to
+ * database raise BusinessLogicException
  */
 public interface GenericService {
 
@@ -42,11 +46,11 @@ public interface GenericService {
 
 	public <T extends BaseEntity> List<T> findAll(Class<T> type, Order order);
 
-	public <T extends BaseEntity> T save(T entity);
+	public <T extends BaseEntity> T save(T entity) throws BusinessLogicException;
 
-	public <T extends BaseEntity> T update(T entity);
+	public <T extends BaseEntity> T update(T entity) throws BusinessLogicException;
 
-	public <T extends BaseEntity> void delete(T entity);
+	public <T extends BaseEntity> void delete(T entity) throws BusinessLogicException;
 
 	public <T extends BaseEntity> boolean exists(Class<T> type, Long id);
 
