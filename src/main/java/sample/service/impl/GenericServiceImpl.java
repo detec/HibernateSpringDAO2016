@@ -17,6 +17,13 @@ import sample.dao.JpaDao;
 import sample.domain.BaseEntity;
 import sample.service.GenericService;
 
+/**
+ * This class provides access to underlying DAO interface. One should use this
+ * class to extend custom entities service layer implementation classes.
+ *
+ * @author duplyk.a
+ *
+ */
 @Service
 public class GenericServiceImpl implements GenericService {
 

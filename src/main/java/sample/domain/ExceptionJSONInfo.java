@@ -1,5 +1,10 @@
 package sample.domain;
 
+/**
+ *
+ * @author duplyk.a This class is used to serialize Exception to a JSON
+ *         representation.
+ */
 public class ExceptionJSONInfo {
 	private String url;
 	private String message;

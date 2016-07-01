@@ -12,7 +12,10 @@ import javax.persistence.criteria.Order;
 import sample.domain.BaseEntity;
 
 /**
- * Interface for injecting service layer implementation class
+ * Interface for injecting service layer common functionality implementation
+ * class. Its methods replicate JPA DAO interface. Specific service class
+ * implementations can override some default methods like save(), update(),
+ * delete() etc.
  */
 public interface GenericService {
 
