@@ -32,39 +32,6 @@ public class BaseEntity implements Serializable {
 		return "code";
 	}
 
-	public <T extends BaseEntity> T cloneEntity(T origObj) {
-
-		Field fields[];
-		Class curClass = origObj.getClass();
-		T newEntity = null;
-		try {
-			newEntity = (T) curClass.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
-		}
-
-		// Spin through all fields of the class & all its superclasses
-		do {
-			fields = curClass.getDeclaredFields();
-
-			for (int i = 0; i < fields.length; i++) {
-				if (fields[i].getName().equals("serialVersionUID")) {
-					continue;
-				}
-				try {
-					fields[i].setAccessible(true);
-					fields[i].set(newEntity, fields[i].get(origObj));
-				} catch (IllegalArgumentException | IllegalAccessException e) {
-					e.printStackTrace();
-				}
-			}
-			curClass = curClass.getSuperclass();
-		}
-
-		while (curClass != null);
-		return newEntity;
-	}
-
 	public <T extends BaseEntity> void copyFields(T sourceEntity, T destinationEntity) {
 
 		if (sourceEntity.getClass() != destinationEntity.getClass()) {
