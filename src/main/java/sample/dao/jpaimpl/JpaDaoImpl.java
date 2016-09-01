@@ -63,7 +63,7 @@ public class JpaDaoImpl implements JpaDao {
 		resultMap.put("criteriaQuery", criteriaQuery);
 		resultMap.put("entityRoot", entityRoot);
 
-		List<Predicate> predicateList = new ArrayList<Predicate>();
+		List<Predicate> predicateList = new ArrayList<>();
 		predicateList.add(predicate);
 		resultMap.put("predicateList", predicateList);
 
@@ -79,7 +79,7 @@ public class JpaDaoImpl implements JpaDao {
 
 		if (resultMap == null || resultMap.keySet().isEmpty()) {
 			// initializing Map if it doesn't meet requirements
-			resultMap = new HashMap<String, Object>();
+			resultMap = new HashMap<>();
 
 			CriteriaQuery<T> criteriaQuery = getCriteriaQuery(type);
 			Metamodel m = getEntityManager().getMetamodel();
@@ -121,7 +121,7 @@ public class JpaDaoImpl implements JpaDao {
 
 		if (resultMap == null || resultMap.keySet().isEmpty()) {
 			// initializing Map if it doesn't meet requirements
-			resultMap = new HashMap<String, Object>();
+			resultMap = new HashMap<>();
 
 			CriteriaQuery<T> criteriaQuery = getCriteriaQuery(type);
 			Metamodel m = getEntityManager().getMetamodel();
@@ -129,7 +129,7 @@ public class JpaDaoImpl implements JpaDao {
 			Root<T> entityRoot = criteriaQuery.from(metaT);
 			Predicate predicate = criteriaBuilder.notEqual(entityRoot.get(field.toLowerCase()), value);
 
-			List<Predicate> predicateList = new ArrayList<Predicate>();
+			List<Predicate> predicateList = new ArrayList<>();
 			predicateList.add(predicate);
 			resultMap.put("predicateList", predicate);
 
@@ -259,6 +259,11 @@ public class JpaDaoImpl implements JpaDao {
 
 	@Override
 	public <T> void refresh(T entity) {
+		// sometimes entity can be received before it was loaded to persistence
+		// context.
+		if (!getEntityManager().contains(entity)) {
+			entity = getEntityManager().merge(entity);
+		}
 		getEntityManager().refresh(entity);
 
 	}
@@ -328,7 +333,7 @@ public class JpaDaoImpl implements JpaDao {
 
 		List<Field> fieldList = Arrays.asList(fields);
 		Class<T> clazz = null;
-		List<Class<T>> classList = new ArrayList<Class<T>>();
+		List<Class<T>> classList = new ArrayList<>();
 
 		// find field with the given name and return its class
 		fieldList.stream().filter(t -> t.getName().equals(fieldName)).forEach(t -> {
@@ -339,8 +344,6 @@ public class JpaDaoImpl implements JpaDao {
 			clazz = classList.get(0);
 		}
 
-		// o.getClass().getField("fieldName").getType().isPrimitive(); for
-		// primitives
 		return clazz;
 	}
 

@@ -14,7 +14,7 @@ public class BaseEntity implements Serializable {
 
 	@Id
 	@GeneratedValue
-	private Long code;
+	protected Long code;
 
 	public Long getCode() {
 		return code;
