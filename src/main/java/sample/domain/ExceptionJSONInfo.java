@@ -2,8 +2,9 @@ package sample.domain;
 
 /**
  *
- * @author duplyk.a This class is used to serialize Exception to a JSON
- *         representation.
+ * This class is used to serialize Exception to a JSON representation.
+ * 
+ * @author duplyk.a
  */
 public class ExceptionJSONInfo {
 	private String url;

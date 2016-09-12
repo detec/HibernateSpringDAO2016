@@ -20,6 +20,8 @@ import sample.exceptions.BusinessLogicException;
  *
  * Methods that may perform checks of business logic before making changes to
  * database raise BusinessLogicException
+ *
+ * @author duplyk.a
  */
 public interface GenericService {
 

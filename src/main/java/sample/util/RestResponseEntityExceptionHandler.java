@@ -18,7 +18,7 @@ import sample.exceptions.BusinessLogicException;
 /**
  * @author duplyk.a
  *
- *         Global handler for BusinessLogicException -s and server ones.
+ *         Global handler for BusinessLogicException instances and server ones.
  */
 @EnableWebMvc
 @ControllerAdvice(basePackages = { "sample.controller" })
