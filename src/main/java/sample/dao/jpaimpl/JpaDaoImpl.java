@@ -30,6 +30,10 @@ public class JpaDaoImpl implements JpaDao {
 
 	private EntityManager entityManager;
 
+	private static final String criteriaQueryConstant = "criteriaQuery";
+
+	private static final String predicateListConstant = "predicateList";
+
 	protected EntityManager getEntityManager() {
 		return entityManager;
 	}
@@ -60,12 +64,12 @@ public class JpaDaoImpl implements JpaDao {
 
 		Predicate predicate = criteriaBuilder.equal(entityRoot.get(field.toLowerCase()), value);
 
-		resultMap.put("criteriaQuery", criteriaQuery);
+		resultMap.put(criteriaQueryConstant, criteriaQuery);
 		resultMap.put("entityRoot", entityRoot);
 
 		List<Predicate> predicateList = new ArrayList<>();
 		predicateList.add(predicate);
-		resultMap.put("predicateList", predicateList);
+		resultMap.put(predicateListConstant, predicateList);
 
 		return resultMap;
 
@@ -96,7 +100,7 @@ public class JpaDaoImpl implements JpaDao {
 			Predicate predicate = criteriaBuilder.equal(entityRoot.get(field.toLowerCase()), value);
 
 			@SuppressWarnings("unchecked")
-			List<Predicate> predicateList = (List<Predicate>) resultMap.get("predicateList");
+			List<Predicate> predicateList = (List<Predicate>) resultMap.get(predicateListConstant);
 			predicateList.add(predicate);
 		}
 
@@ -107,7 +111,7 @@ public class JpaDaoImpl implements JpaDao {
 
 		Map<String, Object> resultMap = getEqualPredicateMap(type, field, value);
 		@SuppressWarnings("unchecked")
-		List<Predicate> predicateList = (List<Predicate>) resultMap.get("predicateList");
+		List<Predicate> predicateList = (List<Predicate>) resultMap.get(predicateListConstant);
 		predicateList.get(0).not(); // negate predicate
 
 		return resultMap;
@@ -131,7 +135,7 @@ public class JpaDaoImpl implements JpaDao {
 
 			List<Predicate> predicateList = new ArrayList<>();
 			predicateList.add(predicate);
-			resultMap.put("predicateList", predicate);
+			resultMap.put(predicateListConstant, predicate);
 
 		} else {
 			// construct and add a new predicate.
@@ -140,7 +144,7 @@ public class JpaDaoImpl implements JpaDao {
 			Predicate predicate = criteriaBuilder.notEqual(entityRoot.get(field.toLowerCase()), value);
 
 			@SuppressWarnings("unchecked")
-			List<Predicate> predicateList = (List<Predicate>) resultMap.get("predicateList");
+			List<Predicate> predicateList = (List<Predicate>) resultMap.get(predicateListConstant);
 			predicateList.add(predicate);
 		}
 
@@ -213,12 +217,12 @@ public class JpaDaoImpl implements JpaDao {
 			Map<String, Object> predicateMap) {
 
 		@SuppressWarnings("unchecked")
-		CriteriaQuery<T> criteriaQuery = (CriteriaQuery<T>) predicateMap.get("criteriaQuery");
+		CriteriaQuery<T> criteriaQuery = (CriteriaQuery<T>) predicateMap.get(criteriaQueryConstant);
 		@SuppressWarnings("unchecked")
 		Root<T> entityRoot = (Root<T>) predicateMap.get("entityRoot");
 
 		@SuppressWarnings("unchecked")
-		List<Predicate> predicateList = (List<Predicate>) predicateMap.get("predicateList");
+		List<Predicate> predicateList = (List<Predicate>) predicateMap.get(predicateListConstant);
 
 		Predicate[] prediacteArray = predicateList.toArray(new Predicate[predicateList.size()]);
 
@@ -236,12 +240,12 @@ public class JpaDaoImpl implements JpaDao {
 	public <T extends BaseEntity> List<T> findAllWithRestrictions(Class<T> type, Map<String, Object> predicateMap) {
 
 		@SuppressWarnings("unchecked")
-		CriteriaQuery<T> criteriaQuery = (CriteriaQuery<T>) predicateMap.get("criteriaQuery");
+		CriteriaQuery<T> criteriaQuery = (CriteriaQuery<T>) predicateMap.get(criteriaQueryConstant);
 		@SuppressWarnings("unchecked")
 		Root<T> entityRoot = (Root<T>) predicateMap.get("entityRoot");
 
 		@SuppressWarnings("unchecked")
-		List<Predicate> predicateList = (List<Predicate>) predicateMap.get("predicateList");
+		List<Predicate> predicateList = (List<Predicate>) predicateMap.get(predicateListConstant);
 
 		// http://stackoverflow.com/questions/22731706/java-lang-classcastexception-ljava-lang-object-cannot-be-cast-to-ljava-lang
 		Predicate[] prediacteArray = predicateList.toArray(new Predicate[predicateList.size()]);
