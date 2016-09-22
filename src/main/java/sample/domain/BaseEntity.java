@@ -9,6 +9,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+/**
+ * Basic mapped superclass to hold Id field
+ *
+ *
+ */
+
 @MappedSuperclass
 public class BaseEntity implements Serializable {
 
@@ -18,19 +24,37 @@ public class BaseEntity implements Serializable {
 	@GeneratedValue
 	protected Long code;
 
+	/**
+	 * ID getter
+	 *
+	 * @return Long id value
+	 */
 	public Long getCode() {
 		return code;
 	}
 
+	/**
+	 * id code setter
+	 *
+	 * @param code
+	 *            set id field value
+	 */
 	public void setCode(Long code) {
 		this.code = code;
 	}
 
+	/**
+	 * Jackson-required constructor
+	 */
 	public BaseEntity() {
 		// For serialization purposes.
 	}
 
-	// This method is needed to return quickly the name of id field.
+	/**
+	 * Resolve current id field for DAO layer
+	 *
+	 * @return string with id field name
+	 */
 	public static String getIdFieldName() {
 		Field[] fields = BaseEntity.class.getDeclaredFields();
 
@@ -42,6 +66,16 @@ public class BaseEntity implements Serializable {
 
 	}
 
+	/**
+	 * This method is useful in JPA where an object, refreshed from database,
+	 * gets into persistence context and destroys current values of entity's
+	 * fields.
+	 *
+	 * @param sourceEntity
+	 *            entity form which field values will be copied.
+	 * @param destinationEntity
+	 *            entity to which values will be assigned.
+	 */
 	public <T extends BaseEntity> void copyFields(T sourceEntity, T destinationEntity) {
 
 		if (sourceEntity.getClass() != destinationEntity.getClass()) {
