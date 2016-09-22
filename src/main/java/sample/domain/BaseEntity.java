@@ -2,6 +2,8 @@ package sample.domain;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Optional;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -25,11 +27,19 @@ public class BaseEntity implements Serializable {
 	}
 
 	public BaseEntity() {
+		// For serialization purposes.
 	}
 
 	// This method is needed to return quickly the name of id field.
 	public static String getIdFieldName() {
-		return "code";
+		Field[] fields = BaseEntity.class.getDeclaredFields();
+
+		// Only Long type of field with annotation javax.persistence.Id
+		Optional<Field> idFieldOpt = Arrays.stream(fields)
+				.filter(field -> (field.getAnnotation(Id.class) != null && field.getType() == Long.class)).findFirst();
+
+		return idFieldOpt.isPresent() ? idFieldOpt.get().getName() : null;
+
 	}
 
 	public <T extends BaseEntity> void copyFields(T sourceEntity, T destinationEntity) {
@@ -47,14 +57,17 @@ public class BaseEntity implements Serializable {
 			fields = curClass.getDeclaredFields();
 
 			for (int i = 0; i < fields.length; i++) {
-				if (fields[i].getName().equals("serialVersionUID")) {
+				Field currentField = fields[i];
+
+				if (java.lang.reflect.Modifier.isStatic(currentField.getModifiers())) {
 					continue;
 				}
+
 				try {
-					fields[i].setAccessible(true);
-					fields[i].set(destinationEntity, fields[i].get(sourceEntity));
+					currentField.setAccessible(true);
+					currentField.set(destinationEntity, currentField.get(sourceEntity));
 				} catch (IllegalArgumentException | IllegalAccessException e) {
-					e.printStackTrace();
+					// swallow
 				}
 			}
 			curClass = curClass.getSuperclass();
