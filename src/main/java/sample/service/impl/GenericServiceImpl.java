@@ -28,6 +28,9 @@ import sample.service.GenericService;
 @Service
 public class GenericServiceImpl implements GenericService {
 
+	/**
+	 * Injected JPA DAO interface
+	 */
 	@Autowired
 	public JpaDao jpaDao;
 

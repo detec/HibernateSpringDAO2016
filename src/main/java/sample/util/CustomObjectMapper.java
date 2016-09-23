@@ -7,11 +7,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+/**
+ * Extended {@link ObjectMapper} with pretty printing
+ *
+ * @author Andrii Duplyk
+ *
+ */
 @Component
 public class CustomObjectMapper extends ObjectMapper {
 
 	private static final long serialVersionUID = -3672344428949816140L;
 
+	/**
+	 * Initialization of custom {@link ObjectMapper}
+	 */
 	public CustomObjectMapper() {
 		// SerializationFeature for changing how JSON is written
 
