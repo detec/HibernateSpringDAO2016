@@ -3,7 +3,7 @@ package sample.domain;
 /**
  *
  * This class is used to serialize Exception to a JSON representation.
- * 
+ *
  * @author duplyk.a
  */
 public class ExceptionJSONInfo {
@@ -11,13 +11,20 @@ public class ExceptionJSONInfo {
 	private String message;
 	private String stackTrace;
 
+	/**
+	 *
+	 * @param url
+	 *            URL of the request
+	 * @param ex
+	 *            Exception passed
+	 */
 	public ExceptionJSONInfo(String url, Exception ex) {
 		this.url = url;
 		this.message = ex.getMessage();
 
 		StringBuilder sb = new StringBuilder();
 
-		StackTraceElement elements[] = ex.getStackTrace();
+		StackTraceElement[] elements = ex.getStackTrace();
 		for (int i = 0, n = elements.length; i < n; i++) {
 
 			sb.append(elements[i].getFileName() + ":" + elements[i].getLineNumber() + ">> "

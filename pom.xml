@@ -13,8 +13,10 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<hibernate.version>5.2.2.Final</hibernate.version>
-		<jackson.version>2.8.1</jackson.version>
-		<spring.version>4.3.2.RELEASE</spring.version>
+		<jackson.version>2.8.3</jackson.version>
+		<spring.version>4.3.3.RELEASE</spring.version>
+		<slf4j.version>1.7.21</slf4j.version>
+		<logback.version>1.1.7</logback.version>
 		<rp.build.warname>sample-dao</rp.build.warname>
 	</properties>
 	
@@ -106,11 +108,12 @@
   			<version>3.1.0</version>
   			<scope>test</scope>
 		</dependency>
+		
 		<!-- Databases -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.39</version>
+			<version>6.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -208,7 +211,24 @@
 			<artifactId>spring-orm</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-			
+		
+		<!-- Logging  -->
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
 			
 	</dependencies>
 </project>

@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,19 +21,30 @@ import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import sample.dao.JpaDao;
 import sample.domain.BaseEntity;
 
+/**
+ * Implementation of {@link JpaDao} interface
+ *
+ * @author Andrii Duplyk
+ */
 @Repository
 public class JpaDaoImpl implements JpaDao {
 
+	private static final Logger logger = LoggerFactory.getLogger(JpaDaoImpl.class);
+
 	private EntityManager entityManager;
 
-	private static final String criteriaQueryConstant = "criteriaQuery";
+	private static final String CRITERIA_QUERY_CONSTANT = "criteriaQuery";
 
-	private static final String predicateListConstant = "predicateList";
+	private static final String PREDICATE_LIST_CONSTANT = "predicateList";
+
+	private static final String ENTITY_ROOT_CONSTANT = "entityRoot";
 
 	protected EntityManager getEntityManager() {
 		return entityManager;
@@ -43,11 +55,9 @@ public class JpaDaoImpl implements JpaDao {
 		this.entityManager = entityManager;
 	}
 
-	// http://www.tutorialspoint.com/jpa/jpa_criteria_api.htm
 	@Override
 	public CriteriaBuilder getCriteriaBuilder() {
-		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-		return criteriaBuilder;
+		return entityManager.getCriteriaBuilder();
 
 	}
 
@@ -64,12 +74,12 @@ public class JpaDaoImpl implements JpaDao {
 
 		Predicate predicate = criteriaBuilder.equal(entityRoot.get(field.toLowerCase()), value);
 
-		resultMap.put(criteriaQueryConstant, criteriaQuery);
-		resultMap.put("entityRoot", entityRoot);
+		resultMap.put(CRITERIA_QUERY_CONSTANT, criteriaQuery);
+		resultMap.put(ENTITY_ROOT_CONSTANT, entityRoot);
 
 		List<Predicate> predicateList = new ArrayList<>();
 		predicateList.add(predicate);
-		resultMap.put(predicateListConstant, predicateList);
+		resultMap.put(PREDICATE_LIST_CONSTANT, predicateList);
 
 		return resultMap;
 
@@ -96,11 +106,11 @@ public class JpaDaoImpl implements JpaDao {
 		} else {
 			// construct and add a new predicate.
 			@SuppressWarnings("unchecked")
-			Root<T> entityRoot = (Root<T>) resultMap.get("entityRoot");
+			Root<T> entityRoot = (Root<T>) resultMap.get(ENTITY_ROOT_CONSTANT);
 			Predicate predicate = criteriaBuilder.equal(entityRoot.get(field.toLowerCase()), value);
 
 			@SuppressWarnings("unchecked")
-			List<Predicate> predicateList = (List<Predicate>) resultMap.get(predicateListConstant);
+			List<Predicate> predicateList = (List<Predicate>) resultMap.get(PREDICATE_LIST_CONSTANT);
 			predicateList.add(predicate);
 		}
 
@@ -111,7 +121,7 @@ public class JpaDaoImpl implements JpaDao {
 
 		Map<String, Object> resultMap = getEqualPredicateMap(type, field, value);
 		@SuppressWarnings("unchecked")
-		List<Predicate> predicateList = (List<Predicate>) resultMap.get(predicateListConstant);
+		List<Predicate> predicateList = (List<Predicate>) resultMap.get(PREDICATE_LIST_CONSTANT);
 		predicateList.get(0).not(); // negate predicate
 
 		return resultMap;
@@ -135,16 +145,16 @@ public class JpaDaoImpl implements JpaDao {
 
 			List<Predicate> predicateList = new ArrayList<>();
 			predicateList.add(predicate);
-			resultMap.put(predicateListConstant, predicate);
+			resultMap.put(PREDICATE_LIST_CONSTANT, predicate);
 
 		} else {
 			// construct and add a new predicate.
 			@SuppressWarnings("unchecked")
-			Root<T> entityRoot = (Root<T>) resultMap.get("entityRoot");
+			Root<T> entityRoot = (Root<T>) resultMap.get(ENTITY_ROOT_CONSTANT);
 			Predicate predicate = criteriaBuilder.notEqual(entityRoot.get(field.toLowerCase()), value);
 
 			@SuppressWarnings("unchecked")
-			List<Predicate> predicateList = (List<Predicate>) resultMap.get(predicateListConstant);
+			List<Predicate> predicateList = (List<Predicate>) resultMap.get(PREDICATE_LIST_CONSTANT);
 			predicateList.add(predicate);
 		}
 
@@ -152,9 +162,7 @@ public class JpaDaoImpl implements JpaDao {
 
 	@Override
 	public <T extends BaseEntity> T findById(Class<T> type, Long id) {
-
-		T entity = getEntityManager().find(type, id);
-		return entity;
+		return getEntityManager().find(type, id);
 	}
 
 	@Override
@@ -165,8 +173,8 @@ public class JpaDaoImpl implements JpaDao {
 
 	@Override
 	public <T extends BaseEntity> T update(T entity) {
-		T mergedEntity = getEntityManager().merge(entity);
-		return mergedEntity;
+		return getEntityManager().merge(entity);
+
 	}
 
 	@Override
@@ -178,37 +186,27 @@ public class JpaDaoImpl implements JpaDao {
 
 	@Override
 	public <T extends BaseEntity> boolean exists(Class<T> type, Long id) {
-		return (findById(type, id) != null);
+		return findById(type, id) != null;
 	}
 
-	/*
-	 * Returns all entities ordered by id in ascending order.
-	 */
 	@Override
 	public <T extends BaseEntity> List<T> findAll(Class<T> type) {
-		// Simplification doesn't work.
+
 		CriteriaQuery<T> criteriaQuery = getCriteriaQuery(type);
 		Root<T> entityRoot = getEntityRoot(type, criteriaQuery);
 		criteriaQuery.select(entityRoot);
 
 		addIdFieldOrderAscending(type, entityRoot, criteriaQuery);
 
-		List<T> results = getResultListFromPreparedSelect(criteriaQuery);
+		return getResultListFromPreparedSelect(criteriaQuery);
 
-		return results;
 	}
 
-	/*
-	 * Returns all entities ordered by order sent
-	 */
 	@Override
 	public <T extends BaseEntity> List<T> findAll(Class<T> type, Order order) {
 		CriteriaQuery<T> select = getBasicSelectCriteriaQuery(type);
-
 		select.orderBy(order);
-
-		List<T> results = getResultListFromPreparedSelect(select);
-		return results;
+		return getResultListFromPreparedSelect(select);
 
 	}
 
@@ -217,12 +215,12 @@ public class JpaDaoImpl implements JpaDao {
 			Map<String, Object> predicateMap) {
 
 		@SuppressWarnings("unchecked")
-		CriteriaQuery<T> criteriaQuery = (CriteriaQuery<T>) predicateMap.get(criteriaQueryConstant);
+		CriteriaQuery<T> criteriaQuery = (CriteriaQuery<T>) predicateMap.get(CRITERIA_QUERY_CONSTANT);
 		@SuppressWarnings("unchecked")
-		Root<T> entityRoot = (Root<T>) predicateMap.get("entityRoot");
+		Root<T> entityRoot = (Root<T>) predicateMap.get(ENTITY_ROOT_CONSTANT);
 
 		@SuppressWarnings("unchecked")
-		List<Predicate> predicateList = (List<Predicate>) predicateMap.get(predicateListConstant);
+		List<Predicate> predicateList = (List<Predicate>) predicateMap.get(PREDICATE_LIST_CONSTANT);
 
 		Predicate[] prediacteArray = predicateList.toArray(new Predicate[predicateList.size()]);
 
@@ -231,23 +229,21 @@ public class JpaDaoImpl implements JpaDao {
 		criteriaQuery.where(prediacteArray);
 		criteriaQuery.orderBy(order);
 
-		List<T> results = getResultListFromPreparedSelect(criteriaQuery);
+		return getResultListFromPreparedSelect(criteriaQuery);
 
-		return results;
 	}
 
 	@Override
 	public <T extends BaseEntity> List<T> findAllWithRestrictions(Class<T> type, Map<String, Object> predicateMap) {
 
 		@SuppressWarnings("unchecked")
-		CriteriaQuery<T> criteriaQuery = (CriteriaQuery<T>) predicateMap.get(criteriaQueryConstant);
+		CriteriaQuery<T> criteriaQuery = (CriteriaQuery<T>) predicateMap.get(CRITERIA_QUERY_CONSTANT);
 		@SuppressWarnings("unchecked")
-		Root<T> entityRoot = (Root<T>) predicateMap.get("entityRoot");
+		Root<T> entityRoot = (Root<T>) predicateMap.get(ENTITY_ROOT_CONSTANT);
 
 		@SuppressWarnings("unchecked")
-		List<Predicate> predicateList = (List<Predicate>) predicateMap.get(predicateListConstant);
+		List<Predicate> predicateList = (List<Predicate>) predicateMap.get(PREDICATE_LIST_CONSTANT);
 
-		// http://stackoverflow.com/questions/22731706/java-lang-classcastexception-ljava-lang-object-cannot-be-cast-to-ljava-lang
 		Predicate[] prediacteArray = predicateList.toArray(new Predicate[predicateList.size()]);
 
 		criteriaQuery.select(entityRoot);
@@ -255,9 +251,7 @@ public class JpaDaoImpl implements JpaDao {
 		criteriaQuery.where(prediacteArray);
 		addIdFieldOrderAscending(type, entityRoot, criteriaQuery);
 
-		List<T> results = getResultListFromPreparedSelect(criteriaQuery);
-
-		return results;
+		return getResultListFromPreparedSelect(criteriaQuery);
 
 	}
 
@@ -281,19 +275,17 @@ public class JpaDaoImpl implements JpaDao {
 		return type.getSimpleName();
 	}
 
-	// https://docs.oracle.com/javaee/7/tutorial/persistence-criteria003.htm
-
 	protected <T extends BaseEntity> List<T> getResultListFromPreparedSelect(CriteriaQuery<T> select) {
 
 		TypedQuery<T> q = entityManager.createQuery(select);
-		List<T> results = q.getResultList();
-		return results;
+		return q.getResultList();
+
 	}
 
 	protected <T extends BaseEntity> CriteriaQuery<T> getCriteriaQuery(Class<T> type) {
 		CriteriaBuilder criteriaBuilder = getCriteriaBuilder();
-		CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(type);
-		return criteriaQuery;
+		return criteriaBuilder.createQuery(type);
+
 	}
 
 	protected <T extends BaseEntity> void addIdFieldOrderAscending(Class<T> type, Root<T> entityRoot,
@@ -304,7 +296,7 @@ public class JpaDaoImpl implements JpaDao {
 			idFieldName = (String) type.getMethod("getIdFieldName").invoke(null);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException e) {
-			e.printStackTrace();
+			logger.error("Error working with id field name {} in reflection", idFieldName, e);
 		}
 
 		select.orderBy(getCriteriaBuilder().asc(entityRoot.get(idFieldName)));
@@ -313,13 +305,13 @@ public class JpaDaoImpl implements JpaDao {
 	protected <T extends BaseEntity> Root<T> getEntityRoot(Class<T> type) {
 		// https://docs.oracle.com/javaee/7/tutorial/persistence-criteria003.htm
 		CriteriaQuery<T> criteriaQuery = getCriteriaQuery(type);
-		Root<T> entityRoot = criteriaQuery.from(type);
-		return entityRoot;
+		return criteriaQuery.from(type);
+
 	}
 
 	protected <T extends BaseEntity> Root<T> getEntityRoot(Class<T> type, CriteriaQuery<T> criteriaQuery) {
-		Root<T> entityRoot = criteriaQuery.from(type);
-		return entityRoot;
+		return criteriaQuery.from(type);
+
 	}
 
 	protected <T extends BaseEntity> CriteriaQuery<T> getBasicSelectCriteriaQuery(Class<T> type) {
@@ -332,23 +324,13 @@ public class JpaDaoImpl implements JpaDao {
 
 	@SuppressWarnings("unchecked")
 	protected <T extends BaseEntity> Class<?> getFieldClass(Class<T> type, String fieldName) {
-		Field fields[];
-		fields = type.getDeclaredFields();
+
+		Field[] fields = type.getDeclaredFields();
 
 		List<Field> fieldList = Arrays.asList(fields);
-		Class<T> clazz = null;
-		List<Class<T>> classList = new ArrayList<>();
+		Optional<Field> foundFieldOptional = fieldList.stream().filter(t -> t.getName().equals(fieldName)).findFirst();
+		return foundFieldOptional.isPresent() ? (Class<T>) foundFieldOptional.get().getType() : null;
 
-		// find field with the given name and return its class
-		fieldList.stream().filter(t -> t.getName().equals(fieldName)).forEach(t -> {
-			classList.add((Class<T>) t.getType());
-		});
-
-		if (classList.size() == 1) {
-			clazz = classList.get(0);
-		}
-
-		return clazz;
 	}
 
 }

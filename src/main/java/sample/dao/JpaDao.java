@@ -169,7 +169,8 @@ public interface JpaDao {
 	public <T extends BaseEntity> T findById(Class<T> type, Long id);
 
 	/**
-	 * Method retrieves list of entities using JPA 2 API.
+	 * Method retrieves list of entities using JPA 2 API ordered by id field in
+	 * ascending order.
 	 *
 	 * @param type
 	 *            - class to be found, for example, Customer.class

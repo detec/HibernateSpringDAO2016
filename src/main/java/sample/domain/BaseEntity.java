@@ -9,6 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Basic mapped superclass to hold Id field
  *
@@ -18,11 +21,20 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public class BaseEntity implements Serializable {
 
+	private static final Logger logger = LoggerFactory.getLogger(BaseEntity.class);
+
 	private static final long serialVersionUID = -2233785857172942658L;
 
 	@Id
 	@GeneratedValue
 	protected Long code;
+
+	/**
+	 * Jackson-required constructor
+	 */
+	public BaseEntity() {
+		// For serialization purposes.
+	}
 
 	/**
 	 * ID getter
@@ -44,13 +56,6 @@ public class BaseEntity implements Serializable {
 	}
 
 	/**
-	 * Jackson-required constructor
-	 */
-	public BaseEntity() {
-		// For serialization purposes.
-	}
-
-	/**
 	 * Resolve current id field for DAO layer
 	 *
 	 * @return string with id field name
@@ -60,7 +65,7 @@ public class BaseEntity implements Serializable {
 
 		// Only Long type of field with annotation javax.persistence.Id
 		Optional<Field> idFieldOpt = Arrays.stream(fields)
-				.filter(field -> (field.getAnnotation(Id.class) != null && field.getType() == Long.class)).findFirst();
+				.filter(field -> field.getAnnotation(Id.class) != null && field.getType() == Long.class).findFirst();
 
 		return idFieldOpt.isPresent() ? idFieldOpt.get().getName() : null;
 
@@ -71,24 +76,26 @@ public class BaseEntity implements Serializable {
 	 * gets into persistence context and destroys current values of entity's
 	 * fields.
 	 *
+	 * @param <V>
+	 *
 	 * @param sourceEntity
 	 *            entity form which field values will be copied.
 	 * @param destinationEntity
 	 *            entity to which values will be assigned.
 	 */
-	public <T extends BaseEntity> void copyFields(T sourceEntity, T destinationEntity) {
+	@SuppressWarnings("unchecked")
+	public <T extends BaseEntity, V> void copyFields(T sourceEntity, T destinationEntity) {
 
 		if (sourceEntity.getClass() != destinationEntity.getClass()) {
 			throw new IllegalArgumentException(
 					"Source object must be the same class or a subclass of destination one!");
 		}
 
-		Field fields[];
-		Class curClass = sourceEntity.getClass();
+		Class<V> curClass = (Class<V>) sourceEntity.getClass();
 
 		// Spin through all fields of the class & all its superclasses
 		do {
-			fields = curClass.getDeclaredFields();
+			Field[] fields = curClass.getDeclaredFields();
 
 			for (int i = 0; i < fields.length; i++) {
 				Field currentField = fields[i];
@@ -101,10 +108,13 @@ public class BaseEntity implements Serializable {
 					currentField.setAccessible(true);
 					currentField.set(destinationEntity, currentField.get(sourceEntity));
 				} catch (IllegalArgumentException | IllegalAccessException e) {
-					// swallow
+					logger.error(
+							"Error when assigning field values in entities by reflection in source {} and destination {}",
+							sourceEntity.toString(), destinationEntity.toString(), e);
+
 				}
 			}
-			curClass = curClass.getSuperclass();
+			curClass = (Class<V>) curClass.getSuperclass();
 		}
 
 		while (curClass != null);
