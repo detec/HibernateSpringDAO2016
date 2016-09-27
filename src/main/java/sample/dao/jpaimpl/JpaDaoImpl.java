@@ -46,7 +46,8 @@ public class JpaDaoImpl implements JpaDao {
 
 	private static final String ENTITY_ROOT_CONSTANT = "entityRoot";
 
-	protected EntityManager getEntityManager() {
+	@Override
+	public EntityManager getEntityManager() {
 		return entityManager;
 	}
 

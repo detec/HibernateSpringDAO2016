@@ -6,6 +6,7 @@ package sample.dao;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Order;
 
@@ -15,6 +16,13 @@ import sample.domain.BaseEntity;
  * Fully generic singleton DAO for JPA 2.
  */
 public interface JpaDao {
+
+	/**
+	 * Returns {@link EntityManager} to perform, i.e. JPQL and native queries.
+	 *
+	 * @return {@link EntityManager}
+	 */
+	public EntityManager getEntityManager();
 
 	/**
 	 * Method is used to retrieve a list of entities filtered with specified
