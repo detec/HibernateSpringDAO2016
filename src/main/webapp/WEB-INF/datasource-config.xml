@@ -26,7 +26,7 @@
 		<property name="jpaProperties">
 			<props>
 				<prop key="hibernate.hbm2ddl.auto">update</prop>
-				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+				<prop key="hibernate.dialect">${dialect}</prop>
 				<prop key="hibernate.current_session_context_class">thread</prop>
 			</props>
 		</property>
