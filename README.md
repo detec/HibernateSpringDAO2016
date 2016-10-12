@@ -12,4 +12,4 @@ DAO layer is built with JPA 2 Entity Manager to provide loose coupling with Hibe
 
 To simplify REST service creation this template project contains pre-configured web.xml both with Spring root context configuration files and Spring MVC 4 configuration file. Sample rest controller supports exception handling and JSON pretty printing.
 
-To test this template deploy it to Apache Tomcat and call endpoint http://localhost:8080/sample-dao/test with GET method. It should return 'true' in response body.
+To test this template deploy it to Apache Tomcat and call endpoint GET http://localhost:8080/sample-dao/test . It should return 'true' in response body. You can also use additional endpoint to check current server time: GET http://localhost:8080/sample-dao/now . Requests should be accompanied by "Accept" and "Content-Type" headers with value application/json. 
