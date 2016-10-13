@@ -2,8 +2,10 @@
 
 This is a template project to build with Maven for DAO layer and REST service. Its core components are:
 
-- Hibernate 5;
-- Spring 4;
+- Hibernate 5.2;
+- Spring 4.3;
+ Jackson Databind 2.8 with JSR310 support;
+ - sl4j/Logback
 - MySQL 5;
 - Tomcat 8;
 - Java 8.
