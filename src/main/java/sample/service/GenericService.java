@@ -10,7 +10,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Order;
 
 import sample.domain.BaseEntity;
-import sample.exceptions.BusinessLogicException;
 
 /**
  * Interface for injecting service layer common functionality implementation
@@ -208,7 +207,7 @@ public interface GenericService {
 	 *            - POJO to be persisted to database.
 	 * @return modified POJO after persisting to database.
 	 */
-	public <T extends BaseEntity> T save(T entity) throws BusinessLogicException;
+	public <T extends BaseEntity> T save(T entity);
 
 	/**
 	 * Simple wrapper method to EntityManager merge() method.
@@ -218,7 +217,7 @@ public interface GenericService {
 	 *            should be passed.
 	 * @return modified POJO after persisting to database.
 	 */
-	public <T extends BaseEntity> T update(T entity) throws BusinessLogicException;
+	public <T extends BaseEntity> T update(T entity);
 
 	/**
 	 * Simple wrapper method for EntityManager remove() method.
@@ -227,7 +226,7 @@ public interface GenericService {
 	 *            - POJO to be deleted. Only POJOs from persistence context
 	 *            should be passed.
 	 */
-	public <T extends BaseEntity> void delete(T entity) throws BusinessLogicException;
+	public <T extends BaseEntity> void delete(T entity);
 
 	/**
 	 * Method to check if the given identifier exists in database for the class

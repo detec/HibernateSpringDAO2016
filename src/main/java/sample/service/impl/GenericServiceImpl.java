@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import sample.dao.JpaDao;
 import sample.domain.BaseEntity;
-import sample.exceptions.BusinessLogicException;
 import sample.service.GenericService;
 
 /**
@@ -97,19 +96,19 @@ public class GenericServiceImpl implements GenericService {
 
 	@Override
 	@Transactional
-	public <T extends BaseEntity> T save(T entity) throws BusinessLogicException {
+	public <T extends BaseEntity> T save(T entity) {
 		return jpaDao.save(entity);
 	}
 
 	@Override
 	@Transactional
-	public <T extends BaseEntity> T update(T entity) throws BusinessLogicException {
+	public <T extends BaseEntity> T update(T entity) {
 		return jpaDao.update(entity);
 	}
 
 	@Override
 	@Transactional
-	public <T extends BaseEntity> void delete(T entity) throws BusinessLogicException {
+	public <T extends BaseEntity> void delete(T entity) {
 		jpaDao.delete(entity);
 	}
 
